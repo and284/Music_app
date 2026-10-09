@@ -58,6 +58,7 @@ class RegisterActivity : AppCompatActivity() {
         //Validar que el resultado de la insercion sea veraddero o falso
         if (registro){
             //si el registro es correcto
+            //Prueba para git
             Toast.makeText(this, "CRegistro exitoso", Toast.LENGTH_SHORT).show()
             //cierra la pantalla actual y regresa a la pantalla anterior
             finish()
