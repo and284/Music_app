@@ -30,12 +30,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper (
 
     //METODO ONCREATE --para crear la DB
     override fun onCreate(db: SQLiteDatabase?) {
-     //Crear la tabla
+        //Crear la tabla
         val crearTablaUsuarios = """
             CREATE TABLE $TABLE_USUARIOS(
             $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
-            $COL_NOMBRE TEXT NOT NULL
-            $COL_CORREO TEXT NOT NULL
+            $COL_NOMBRE TEXT NOT NULL,
+            $COL_CORREO TEXT NOT NULL,
             $COL_PASSWORD TEXT NOT NULL
             )
         """.trimIndent()

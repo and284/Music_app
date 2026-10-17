@@ -5,6 +5,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -13,7 +14,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etNombre : EditText
     private lateinit var etCorreo : EditText
     private lateinit var etpassword : EditText
-    private lateinit var btnRegistrar : EditText
+    private lateinit var btnRegistrar : Button
 
     //Crear instancia del DatabaseHaper
     private lateinit var dbHelper: DatabaseHelper
@@ -59,7 +60,7 @@ class RegisterActivity : AppCompatActivity() {
         if (registro){
             //si el registro es correcto
             //Prueba para git
-            Toast.makeText(this, "CRegistro exitoso", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
             //cierra la pantalla actual y regresa a la pantalla anterior
             finish()
         }else{
