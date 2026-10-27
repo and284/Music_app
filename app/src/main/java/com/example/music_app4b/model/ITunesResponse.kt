@@ -1,3 +1,7 @@
 package com.example.music_app4b.model
 
-data class ITunesResponse()
+//ARCHIVO PARA RECIBIR LA RESPUESTA DE CONFIRMACION DEL API
+data class ITunesResponse(
+    val resultCount : Int,
+    val results : List<Album>
+)
