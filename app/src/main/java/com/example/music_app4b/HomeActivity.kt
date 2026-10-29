@@ -123,7 +123,7 @@ class HomeActivity : AppCompatActivity() {
 
                 }
             }
-            //Asignar la vista del contenedor a las tajetas de albumen
+            //Asignar la vista del contenedor a las tarjetas de albumen
             contenedor.addView(vistaAlbum)
         }
     }
