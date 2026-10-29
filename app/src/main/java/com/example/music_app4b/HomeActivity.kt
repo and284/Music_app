@@ -1,6 +1,8 @@
 package com.example.music_app4b
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,6 +23,8 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var tvResultado : TextView
     private lateinit var contenedorIndie : LinearLayout
+    private lateinit var contenedorRock : LinearLayout
+    private lateinit var contenedorTop : LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,43 +33,35 @@ class HomeActivity : AppCompatActivity() {
 
         tvResultado = findViewById(R.id.tvResultado)
         contenedorIndie = findViewById(R.id.contenedorIndie)
+        contenedorRock = findViewById(R.id.contenedorRock)
+        contenedorTop = findViewById(R.id.contenedorTop)
 
         //TOD: Agregar metodo de llamado de Album
-        obtenerAlbum()
-
+        obtenerAlbum("indie",contenedorIndie)
+        obtenerAlbum("Rock", contenedorRock)
+        obtenerAlbum("Twenty one Pilots",contenedorTop)
     }
 
     //METODO PARA OBTENER INFROMACION DEL ALBUM
-    private fun obtenerAlbum(){
+    private fun obtenerAlbum(genero : String, contenedor : LinearLayout){
 
         //hacer el llamado a la construccion de la URL
         RetrofinClient.api.obtenerAlbumGenero(
-            genero = "Romeo Santos",
+            genero = genero,
             pais = "MX",
             media = "music",
             entidad = "album",
-            limite = 1
+            limite = 10
         ).enqueue( object : Callback<ITunesResponse?> {
             //METODO EN CASO DE QUE LA RESPUESTA SEA CORRECTA
             override fun onResponse(call: Call<ITunesResponse?>, response: Response<ITunesResponse?>) {
                 //Variable para guardar el numero de albumes consultados
-                val albumes = response.body()?.results
+                val albumes = response.body()?.results ?: emptyList()
 
                 //Validar si la variable albumes tiene informacion
-                if(!albumes.isNullOrEmpty()){
-
-                    //Variable para acceder al primer elemneto de los albumes encontrados
-                    val album = albumes[0]
-
-                    tvResultado.text =
-                        "Album: ${ album.collectionName } \n\n" +
-                                "Artista: ${album.artistName} \n\n"+
-                                "Numero canciones: ${album.trackCount} \n\n"
-                    //Mostrar la imagen del abum
-                    /*Glide.with(this@HomeActivity)
-                        .load(album.obtenerImagenGrande())
-                        .into(imgAlbum)*/
-
+                if(albumes.isNotEmpty()){
+                    tvResultado.visibility = View.GONE
+                    mostrarAlbumes(albumes, contenedor)
                 }else{
                     Toast.makeText(this@HomeActivity, "No hay respuesta del API", Toast.LENGTH_SHORT).show()
                 }
@@ -79,10 +75,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     //METODO PARA DEMOSTRAR EL RESULTADO DE DATOS DE UN API
-    private fun mostrarAlbumes(albumes : List<Album>){
+    private fun mostrarAlbumes(albumes : List<Album>, contenedor: LinearLayout){
 
         //OBLIGATORIAMENTE Evitar elementos duplicados
-        contenedorIndie.removeAllViews()
+        contenedor.removeAllViews()
 
         //ciclo para recorrer las multiples particiones aun apip
         for(album in albumes){
@@ -90,7 +86,7 @@ class HomeActivity : AppCompatActivity() {
             //usar el linerlayout con el contenedor
             val vistaAlbum = layoutInflater.inflate(
                 R.layout.item_album,
-                contenedorIndie,
+                contenedor,
                 false
             )
             val imgPortada = vistaAlbum.findViewById<ImageView>(R.id.imgPortadaAlbum)
@@ -106,10 +102,29 @@ class HomeActivity : AppCompatActivity() {
                 .load(album.obtenerImagenGrande())
                 .into(imgPortada)
 
+
+            vistaAlbum.setOnClickListener {
+                //necesitamos obtener el id
+                val idAlbum = album.collectionId
+
+                //validacion para saber que se cuenta con id
+                if(idAlbum != null){
+                    val intent = Intent(this@HomeActivity, DetailsActivity::class.java)
+
+                    //enviar datos
+                    intent.putExtra("ID_ALBUM", idAlbum)
+                    intent.putExtra("NOMBRE_ALBUM", album.collectionName)
+                    intent.putExtra("ARTISTA_ALBUM", album.artistName)
+                    intent.putExtra("GENERO_ALBUM",album.primaryGenreName)
+                    intent.putExtra("CANCIONES_ALBUM",album.trackCount)
+                    intent.putExtra("IMAGEN_ALBUM", album.obtenerImagenGrande())
+
+                    startActivity(intent)
+
+                }
+            }
             //Asignar la vista del contenedor a las tajetas de albumen
-            contenedorIndie.addView(vistaAlbum)
-
+            contenedor.addView(vistaAlbum)
         }
-
     }
 }
